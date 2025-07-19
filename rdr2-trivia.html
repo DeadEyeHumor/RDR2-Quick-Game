@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RDR2 Trivia Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f8f4ef;
+      color: #333;
+      border: 2px solid #6b4f3f;
+      border-radius: 12px;
+    }
+    h1 {
+      text-align: center;
+      color: #7a4f24;
+    }
+    .question {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    .option {
+      background-color: #e2d7c7;
+      padding: 12px 18px;
+      margin: 10px 0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      border: 1px solid transparent;
+    }
+    .option:hover {
+      background-color: #cdbd8f;
+    }
+    .correct {
+      background-color: #9adf8e !important;
+      border-color: #4d8823 !important;
+      color: #2b4500;
+    }
+    .wrong {
+      background-color: #ed6a5a !important;
+      border-color: #b53a2e !important;
+      color: #541313;
+    }
+    .score {
+      font-size: 1.5rem;
+      text-align: center;
+      margin-top: 30px;
+      font-weight: bold;
+      color: #6b4f3f;
+    }
+    button#restart {
+      margin-top: 25px;
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      background-color: #7a4f24;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button#restart:hover {
+      background-color: #5a3b19;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Red Dead Redemption 2 Trivia Game</h1>
+
+  <div id="quiz-container"></div>
+
+  <script>
+    // Sample questions array (30 questions). Expand as needed.
+    const questions = [
+      {
+        question: "Which gang is Arthur Morgan a member of?",
+        options: ["Van der Linde", "O'Driscoll", "Lemoyne Raiders", "Del Lobo"],
+        answer: 0,
+      },
+      {
+        question: "In which year is RDR2 set?",
+        options: ["1899", "1885", "1907", "1875"],
+        answer: 0,
+      },
+      {
+        question: "What is the name of the city where you find the Van der Linde gang's camp in chapter 4?",
+        options: ["Saint Denis", "Blackwater", "Rhodes", "Valentine"],
+        answer: 0,
+      },
+      {
+        question: "Who is the leader of the Van der Linde gang?",
+        options: ["Dutch Van der Linde", "Micah Bell", "Arthur Morgan", "John Marston"],
+        answer: 0,
+      },
+      {
+        question: "Which legendary animal can be found in the Grizzlies East?",
+        options: ["Legendary Bear", "Legendary Wolf", "Legendary Bison", "Legendary Cougar"],
+        answer: 0,
+      },
+      {
+        question: "What is the name of Arthur Morgan's closest friend and gang member who is also a mentor figure?",
+        options: ["Hosea Matthews", "Bill Williamson", "Micah Bell", "Javier Escuella"],
+        answer: 0,
+      },
+      {
+        question: "Which horse breed is considered the rarest and best in the game?",
+        options: ["Arabian", "Thoroughbred", "Appaloosa", "Missouri Fox Trotter"],
+        answer: 0,
+      },
+      {
+        question: "Where can you find the 'Strange Man' NPC who appears mysteriously?",
+        options: ["Clemens Point", "Annesburg", "Mount Shann", "The Hennigan’s Stead"],
+        answer: 0,
+      },
+      {
+        question: "What weapon does Arthur Morgan primarily use in the game?",
+        options: ["Repeater", "Revolver", "Bow", "Lasso"],
+        answer: 0,
+      },
+      {
+        question: "What is the name of John Marston’s wife?",
+        options: ["Abigail", "Mary", "Susan", "Sadie"],
+        answer: 0,
+      },
+      {
+        question: "Which of these is NOT a gang member in the Van der Linde gang?",
+        options: ["Colm O’Driscoll", "Charles Smith", "Javier Escuella", "Sadie Adler"],
+        answer: 0,
+      },
+      {
+        question: "What is the primary theme of Red Dead Redemption 2's story?",
+        options: [
+          "Redemption and loyalty",
+          "Space exploration",
+          "Time travel",
+          "Medieval kingdoms",
+        ],
+        answer: 0,
+      },
+      {
+        question: "What happens to Micah Bell at the end of the story?",
+        options: [
+          "He betrays the gang and fights Arthur",
+          "Becomes the gang leader",
+          "Leaves peacefully",
+          "Joins the law",
+        ],
+        answer: 0,
+      },
+      {
+        question: "Which character says: 'I gave you all I had'?",
+        options: ["Arthur Morgan", "Dutch Van der Linde", "John Marston", "Sadie Adler"],
+        answer: 0,
+      },
+      {
+        question: "What is the name of the in-game currency used to buy goods?",
+        options: ["Dollars", "Gold Coins", "Barter Tokens", "Silver Pieces"],
+        answer: 0,
+      },
+      {
+        question: "Where is the famous ‘Eagle’s Summit’ location found?",
+        options: ["West Elizabeth", "New Hanover", "Lemoyne", "Ambarino"],
+        answer: 0,
+      },
+      {
+        question: "Which character is known for his sharpshooting skills and loyalty?",
+        options: ["Charles Smith", "Micah Bell", "Dutch Van der Linde", "Hosea Matthews"],
+        answer: 0,
+      },
+      {
+        question: "What animal is commonly hunted for pelts to craft items?",
+        options: ["Deer", "Lions", "Penguins", "Elephants"],
+        answer: 0,
+      },
+      {
+        question: "Where do you first meet the Van der Linde gang?",
+        options: ["Outside Valentine", "Inside Saint Denis", "In Blackwater", "In Rhodes"],
+        answer: 0,
+      },
+      {
+        question: "Which mission involves rescuing Sean MacGuire?",
+        options: ["‘Money Lending and Other Sins’", "‘Polite Society, Valentine Style’", "‘Pouring Forth Oil’", "‘The Noblest of Men, and a Woman’"],
+        answer: 0,
+      },
+      {
+        question: "Which of these is NOT a usable weapon in RDR2?",
+        options: ["Laser Gun", "Revolver", "Bow", "Throwing Knives"],
+        answer: 0,
+      },
+      {
+        question: "What is the name of the camp leader’s horse, Dutch’s primary steed?",
+        options: ["Duchess", "White", "Fury", "Buick"],
+        answer: 0,
+      },
+      {
+        question: "Which character helps Arthur recover in Chapter 6 after he’s injured?",
+        options: ["Sadie Adler", "John Marston", "Micah Bell", "Leopold Strauss"],
+        answer: 0,
+      },
+      {
+        question: "What is the fastest horse breed in RDR2?",
+        options: ["Thoroughbred", "American Standardbred", "Arabian", "Missouri Fox Trotter"],
+        answer: 1,
+      },
+      {
+        question: "Which region in RDR2 is known for its swamps and bayous?",
+        options: ["Lemoyne", "Ambarino", "West Elizabeth", "New Hanover"],
+        answer: 0,
+      },
+      {
+        question: "Who is the bounty hunter that chases John Marston in the epilogue?",
+        options: ["Agent Milton", "Leviticus Cornwall", "Colm O’Driscoll", "Edgar Ross"],
+        answer: 0,
+      },
+      {
+        question: "What kind of tree is commonly found in the ‘Heartlands’ region?",
+        options: ["Oak", "Palm", "Pine", "Maple"],
+        answer: 0,
+      },
+      {
+        question: "Which character was raised on a reservation and is an expert tracker?",
+        options: ["Charles Smith", "Hosea Matthews", "Micah Bell", "Sadie Adler"],
+        answer: 0,
+      },
+      {
+        question: "What is the name of the mysterious cave that holds secrets and loot?",
+        options: ["Cueva del Diablo", "Bear Cave", "Moonstone Pond Cave", "Brandywine Drop Cave"],
+        answer: 2,
+      },
+      {
+        question: "Which mission is centered around a staged performance in Valentine?",
+        options: ["Polite Society, Valentine Style", "A Short Walk in a Pretty Town", "The First Shall Be Last", "Good, Honest, Snake Oil"],
+        answer: 0,
+      },
+      {
+        question: "Who composed the main soundtrack of Red Dead Redemption 2?",
+        options: ["Woody Jackson", "Hans Zimmer", "John Williams", "Nobuo Uematsu"],
+        answer: 0,
+      },
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let acceptingAnswers = true;
+
+    const quizContainer = document.getElementById("quiz-container");
+
+    function showQuestion() {
+      acceptingAnswers = true;
+      const currentQuestion = questions[currentQuestionIndex];
+      let optionsHtml = "";
+      currentQuestion.options.forEach((opt, i) => {
+        optionsHtml += `<div class="option" data-index="${i}">${opt}</div>`;
+      });
+
+      quizContainer.innerHTML = `
+        <div class="question">${currentQuestion.question}</div>
+        ${optionsHtml}
+      `;
+
+      document.querySelectorAll(".option").forEach(option => {
+        option.addEventListener("click", selectAnswer);
+      });
+    }
+
+    function selectAnswer(e) {
+      if (!acceptingAnswers) return;
+
+      acceptingAnswers = false;
+      const selectedOption = e.target;
+      const selectedIndex = parseInt(selectedOption.getAttribute("data-index"));
+      const correctIndex = questions[currentQuestionIndex].answer;
+
+      if (selectedIndex === correctIndex) {
+        selectedOption.classList.add("correct");
+        score++;
+      } else {
+        selectedOption.classList.add("wrong");
+        // Show correct answer highlight
+        const options = document.querySelectorAll(".option");
+        options[correctIndex].classList.add("correct");
+      }
+
+      setTimeout(() => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+          showQuestion();
+        } else {
+          showScore();
+        }
+      }, 1500);
+    }
+
+    function showScore() {
+      quizContainer.innerHTML = `
+        <div class="score">Game Over! Your score: ${score} / ${questions.length}</div>
+        <button id="restart">Play Again</button>
+      `;
+
+      document.getElementById("restart").addEventListener("click", () => {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+      });
+    }
+
+    showQuestion();
+  </script>
+
+</body>
+</html>
